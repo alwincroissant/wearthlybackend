@@ -20,6 +20,18 @@ app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
 
+app.get("/", (_req, res) => {
+  res.status(200).json({
+    success: true,
+    service: "Wearthly API",
+    status: "online",
+  });
+});
+
+app.get("/health", (_req, res) => {
+  res.status(200).json({ success: true, status: "ok" });
+});
+
 // Must allow the exact frontend origin with credentials: true so the
 // browser will store and send the JWT cookie on cross-origin requests.
 app.use(
