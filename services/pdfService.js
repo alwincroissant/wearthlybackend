@@ -32,7 +32,7 @@ export const generateOrderInvoicePDF = (order, user = {}) => {
       const fulfillment =
         order.shippingInfo?.fulfillmentMethod === "delivery"
           ? "Door-to-Door Delivery"
-          : "Dealership Pickup";
+          : "Pickup";
       const address =
         order.shippingInfo?.address ||
         order.shippingInfo?.branch ||
@@ -56,19 +56,19 @@ export const generateOrderInvoicePDF = (order, user = {}) => {
         }
       );
 
-      // ─── Header with Official Dealership Logo ──────────────────────────────
+      // ─── Wearthly receipt header ───────────────────────────────────────────
       const logoPath = path.resolve("assets/wearthly-logo.png");
       const hasLogo = fs.existsSync(logoPath);
 
       if (hasLogo) {
         doc.image(logoPath, 40, 36, { fit: [44, 44] });
         doc.fillColor("#047857").fontSize(20).font("Helvetica-Bold").text("WEARTHLY", 92, 38);
-        doc.fillColor("#71717a").fontSize(8.5).font("Helvetica").text("Motorcycle Marketplace & Rider Support", 92, 60);
-        doc.text("Metro Manila, Philippines · Official Transaction Invoice", 92, 72);
+        doc.fillColor("#71717a").fontSize(8.5).font("Helvetica").text("Comfort, Reimagined.", 92, 60);
+        doc.text("Wearthly · Official Transaction Invoice", 92, 72);
       } else {
         doc.fillColor("#047857").fontSize(22).font("Helvetica-Bold").text("WEARTHLY", 40, 40);
-        doc.fillColor("#71717a").fontSize(9).font("Helvetica").text("Motorcycle Marketplace & Rider Support", 40, 68);
-        doc.text("Metro Manila, Philippines · Official Transaction Receipt", 40, 80);
+        doc.fillColor("#71717a").fontSize(9).font("Helvetica").text("Comfort, Reimagined.", 40, 68);
+        doc.text("Wearthly · Official Transaction Receipt", 40, 80);
       }
 
       // Invoice metadata on right

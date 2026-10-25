@@ -710,6 +710,7 @@ export const updateOrderStatus = async (req, res) => {
     return res.status(200).json({
       success: true,
       message: "Order status updated",
+      order,
       data: {
         order,
       },
