@@ -13,12 +13,14 @@ import adminCustomerRoutes from "./routes/adminCustomerRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
+import { seedSampleProducts } from "./seed_sample_products.js";
 
 const app = express();
 
 app.use(express.json({ limit: "50mb" }));
 app.use(express.urlencoded({ extended: true, limit: "50mb" }));
 app.use(cookieParser());
+app.use("/sample-products", express.static("public/sample-products"));
 
 app.get("/", (_req, res) => {
   res.status(200).json({
@@ -43,6 +45,11 @@ app.use(
 
 connection();
 // connection() returns void, so we use the mongoose "open" event.
+mongoose.connection.once("open", () => {
+  seedSampleProducts().catch((error) => {
+    console.error("Sample product seed failed:", error);
+  });
+});
 
 app.use("/api/v1", authRoutes);
 app.use("/api/v1/profile", userRoutes);

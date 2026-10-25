@@ -25,4 +25,5 @@ services:
         value: 7
       - key: FRONTEND_URL
         sync: false
-
+      - key: PUBLIC_URL
+        value: https://wearthlybackend.onrender.com
