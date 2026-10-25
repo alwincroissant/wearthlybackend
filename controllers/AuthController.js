@@ -18,7 +18,9 @@ const uploadHandler = (fileBuffer, folder) => {
   });
 };
 
-const isProd = process.env.NODE_ENV === "production";
+const useCrossOriginCookies =
+  String(process.env.NODE_ENV).toLowerCase() === "production" ||
+  String(process.env.FRONTEND_URL).startsWith("https://");
 const DUMMY_PASSWORD_HASH =
   "$2b$10$7EqJtq98hPqEX7fNZaFWoOeYc4v5v5yQbO5B5H4a2B8h8Z9d9W6aK";
 
@@ -32,8 +34,8 @@ const sendToken = async (user, statusCode, res) => {
   const options = {
     expires: new Date(Date.now() + cookieExpireDays * 24 * 60 * 60 * 1000),
     httpOnly: true,
-    sameSite: isProd ? "none" : "lax",
-    secure: isProd,
+    sameSite: useCrossOriginCookies ? "none" : "lax",
+    secure: useCrossOriginCookies,
   };
 
   user.password = undefined;
@@ -163,8 +165,8 @@ export const logout = (_req, res) => {
   res.cookie("token", null, {
     expires: new Date(Date.now()),
     httpOnly: true,
-    sameSite: isProd ? "none" : "lax",
-    secure: isProd,
+    sameSite: useCrossOriginCookies ? "none" : "lax",
+    secure: useCrossOriginCookies,
   });
 
   return res.status(200).json({
