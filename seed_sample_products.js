@@ -40,7 +40,9 @@ const sampleProducts = [
 ];
 
 export const seedSampleProducts = async () => {
-  const existingProducts = await Product.countDocuments();
+  const existingProducts = await Product.countDocuments({
+    isArchived: { $ne: true },
+  });
   if (existingProducts > 0) return;
 
   const publicUrl = (
