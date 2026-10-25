@@ -40,6 +40,8 @@ const sampleProducts = [
 ];
 
 export const seedSampleProducts = async () => {
+  if (process.env.SEED_SAMPLE_PRODUCTS !== "true") return;
+
   const existingProducts = await Product.countDocuments({
     isArchived: { $ne: true },
   });

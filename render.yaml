@@ -27,3 +27,5 @@ services:
         sync: false
       - key: PUBLIC_URL
         value: https://wearthlybackend.onrender.com
+      - key: SEED_SAMPLE_PRODUCTS
+        value: "true"
