@@ -1,0 +1,25 @@
+import { Router } from "express";
+import {
+  register,
+  login,
+  logout,
+  getUserProfile,
+} from "../controllers/AuthController.js";
+import upload from "../middleware/multer.js";
+import { auth } from "../middleware/authMiddleware.js";
+import { authorizeRoles } from "../middleware/authMiddleware.js";
+const router = Router();
+
+router.post(
+  "/register",
+  upload.fields([
+    { name: "profilePicture", maxCount: 1 },
+  ]),
+  register,
+);
+
+router.post("/login", login);
+router.get("/logout", logout);
+router.get("/me", auth, getUserProfile);
+
+export default router;
