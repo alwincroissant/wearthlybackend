@@ -29,3 +29,9 @@ services:
         value: https://wearthlybackend.onrender.com
       - key: SEED_SAMPLE_PRODUCTS
         value: "true"
+      - key: SEED_ADMIN
+        value: "true"
+      - key: ADMIN_EMAIL
+        value: admin@wearthly.com
+      - key: ADMIN_PASSWORD
+        sync: false

@@ -13,6 +13,7 @@ import adminCustomerRoutes from "./routes/adminCustomerRoutes.js";
 import inventoryRoutes from "./routes/inventoryRoutes.js";
 import supplierRoutes from "./routes/supplierRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
+import { seedAdmin } from "./seed_admin.js";
 import { seedSampleProducts } from "./seed_sample_products.js";
 
 const app = express();
@@ -46,9 +47,11 @@ app.use(
 connection();
 // connection() returns void, so we use the mongoose "open" event.
 mongoose.connection.once("open", () => {
-  seedSampleProducts().catch((error) => {
-    console.error("Sample product seed failed:", error);
-  });
+  seedAdmin()
+    .then((admin) => seedSampleProducts(admin?._id))
+    .catch((error) => {
+      console.error("Startup seed failed:", error);
+    });
 });
 
 app.use("/api/v1", authRoutes);

@@ -39,8 +39,9 @@ const sampleProducts = [
   },
 ];
 
-export const seedSampleProducts = async () => {
+export const seedSampleProducts = async (ownerId) => {
   if (process.env.SEED_SAMPLE_PRODUCTS !== "true") return;
+  if (!ownerId) throw new Error("An owner is required for sample products.");
 
   const existingProducts = await Product.countDocuments({
     isArchived: { $ne: true },
@@ -51,8 +52,6 @@ export const seedSampleProducts = async () => {
     process.env.PUBLIC_URL ||
     `http://localhost:${process.env.PORT || 4001}`
   ).replace(/\/$/, "");
-  const systemOwner = "000000000000000000000001";
-
   await Product.insertMany(
     sampleProducts.map((product) => ({
       name: product.name,
@@ -63,7 +62,7 @@ export const seedSampleProducts = async () => {
       ratings: product.ratings,
       numOfReviews: product.numOfReviews,
       isFeatured: product.isFeatured,
-      user: systemOwner,
+      user: ownerId,
       images: [
         {
           url: `${publicUrl}/sample-products/${product.image}`,
