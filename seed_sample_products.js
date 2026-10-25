@@ -43,17 +43,32 @@ export const seedSampleProducts = async (ownerId) => {
   if (process.env.SEED_SAMPLE_PRODUCTS !== "true") return;
   if (!ownerId) throw new Error("An owner is required for sample products.");
 
-  const existingProducts = await Product.countDocuments({
-    isArchived: { $ne: true },
-  });
-  if (existingProducts > 0) return;
-
   const publicUrl = (
     process.env.PUBLIC_URL ||
     `http://localhost:${process.env.PORT || 4001}`
   ).replace(/\/$/, "");
-  await Product.insertMany(
-    sampleProducts.map((product) => ({
+
+  const existingProducts = await Product.countDocuments({
+    isArchived: { $ne: true },
+  });
+
+  for (const product of sampleProducts) {
+    const image = {
+      url: `${publicUrl}/sample-products/${product.image}`,
+      publicId: `wearthly-sample-${product.image}`,
+    };
+    const existing = await Product.findOne({ name: product.name });
+
+    if (existing) {
+      existing.user = ownerId;
+      existing.images = [image];
+      existing.isArchived = false;
+      existing.isFeatured = true;
+      await existing.save();
+      continue;
+    }
+
+    await Product.create({
       name: product.name,
       description: product.description,
       price: product.price,
@@ -63,14 +78,13 @@ export const seedSampleProducts = async (ownerId) => {
       numOfReviews: product.numOfReviews,
       isFeatured: product.isFeatured,
       user: ownerId,
-      images: [
-        {
-          url: `${publicUrl}/sample-products/${product.image}`,
-          publicId: `wearthly-sample-${product.image}`,
-        },
-      ],
-    })),
-  );
+      images: [image],
+    });
+  }
 
-  console.log(`Seeded ${sampleProducts.length} Wearthly sample products.`);
+  console.log(
+    existingProducts > 0
+      ? "Repaired Wearthly sample products."
+      : `Seeded ${sampleProducts.length} Wearthly sample products.`,
+  );
 };
