@@ -476,22 +476,18 @@ export const newOrder = async (req, res) => {
 
 /**
  * GET /api/v1/orders/me
- * Returns all orders and installment applications belonging to the logged-in user.
+ * Returns all orders belonging to the logged-in user.
  */
 export const getMyOrders = async (req, res) => {
   try {
-    const [orders, applications] = await Promise.all([
-      Order.find({ user: req.user._id })
-        .populate("orderItems.product", "name category images")
-        .sort({ createdAt: -1 }),
-      InstallmentApplication.find({ user: req.user._id }).sort({ createdAt: -1 }),
-    ]);
+    const orders = await Order.find({ user: req.user._id })
+      .populate("orderItems.product", "name images")
+      .sort({ createdAt: -1 });
 
     return res.status(200).json({
       success: true,
       orders,
-      applications,
-      data: { orders, applications },
+      data: { orders },
     });
   } catch (error) {
     console.error("getMyOrders error:", error);
@@ -509,7 +505,7 @@ export const getOrderDetails = async (req, res) => {
   try {
     const order = await Order.findById(req.params.id).populate(
       "orderItems.product",
-      "name category images",
+      "name images",
     );
 
     if (!order) {
