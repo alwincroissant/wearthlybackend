@@ -611,16 +611,6 @@ export const getAdminApplications = async (req, res) => {
 
 // ─── updateOrderStatus ─────────────────────────────────────────────────────────
 
-// Allowed forward transitions for orderStatus
-const STATUS_TRANSITIONS = {
-  pending: ["processing", "canceled"],
-  processing: ["ready_for_pickup", "shipped", "canceled"],
-  ready_for_pickup: ["completed", "canceled"],
-  shipped: ["completed", "canceled"],
-  completed: [],
-  canceled: [],
-};
-
 /**
  * PUT /api/v1/admin/order/:id/status
  * Updates order and/or payment status (admin only).
@@ -634,13 +624,19 @@ export const updateOrderStatus = async (req, res) => {
       return res.status(404).json({ success: false, message: "Order not found" });
     }
 
-    // Validate orderStatus transition if provided
+    // Active orders may be moved freely between valid fulfillment states.
+    // Delivered and canceled orders are terminal.
     if (orderStatus && orderStatus !== order.orderStatus) {
-      const allowed = STATUS_TRANSITIONS[order.orderStatus] || [];
-      if (!allowed.includes(orderStatus)) {
+      if (!["pending", "processing", "ready_for_pickup", "shipped", "completed", "canceled"].includes(orderStatus)) {
         return res.status(400).json({
           success: false,
-          message: `Cannot transition order from '${order.orderStatus}' to '${orderStatus}'`,
+          message: `Invalid order status '${orderStatus}'`,
+        });
+      }
+      if (["completed", "canceled"].includes(order.orderStatus)) {
+        return res.status(400).json({
+          success: false,
+          message: `A ${order.orderStatus} order cannot be changed`,
         });
       }
       const previousStatus = order.orderStatus;
