@@ -181,7 +181,7 @@ export const generateOrderInvoicePDF = (order, user = {}) => {
           footerY + 10,
           { align: "center", width: 515 }
         );
-      doc.text("For customer inquiries or warranty service, contact support@wearthly.ph or visit our support center.", 40, footerY + 24, { align: "center", width: 515 });
+      doc.text("For customer inquiries or warranty service, contact wearthlycustomerservice@gmail.com or visit our support center.", 40, footerY + 24, { align: "center", width: 515 });
 
       doc.end();
     } catch (error) {
