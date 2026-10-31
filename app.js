@@ -15,6 +15,7 @@ import supplierRoutes from "./routes/supplierRoutes.js";
 import settingsRoutes from "./routes/settingsRoutes.js";
 import { seedAdmin } from "./seed_admin.js";
 import { seedSampleProducts } from "./seed_sample_products.js";
+import User from "./model/User.js";
 
 const app = express();
 
@@ -47,6 +48,13 @@ app.use(
 connection();
 // connection() returns void, so we use the mongoose "open" event.
 mongoose.connection.once("open", () => {
+  User.updateMany(
+    { profilePicture: /default-avatar\.png$/ },
+    { $set: { profilePicture: "/default-avatar.svg" } },
+  ).catch((error) => {
+    console.error("Default avatar migration failed:", error);
+  });
+
   seedAdmin()
     .then((admin) => seedSampleProducts(admin?._id))
     .catch((error) => {

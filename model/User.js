@@ -31,7 +31,7 @@ const userSchema = new mongoose.Schema({
   },
   profilePicture: {
     type: String,
-    default: "https://res.cloudinary.com/chqrvlr4/image/upload/v1/profile/default-avatar.png",
+    default: "/default-avatar.svg",
   },
   authProvider: {
     type: String,
