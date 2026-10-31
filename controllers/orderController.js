@@ -1047,7 +1047,7 @@ export const getOrderReceipt = async (req, res) => {
       <div>
         <div class="brand-title">Wearthly</div>
         <div style="font-size: 12px; color: #71717a; margin-top: 4px;">Motorcycle Marketplace & Rider Support</div>
-        <div style="font-size: 12px; color: #71717a;">Metro Manila, Philippines · Official Transaction Invoice</div>
+        <div style="font-size: 12px; color: #71717a;">#40 Guyabano St. Brgy. Katuparan, Taguig City · Official Transaction Invoice</div>
       </div>
       <div style="text-align: right;">
         <div style="font-family: monospace; font-size: 18px; font-weight: 800; color: #18181b;">${order.orderNumber}</div>

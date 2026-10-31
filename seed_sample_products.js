@@ -1,4 +1,5 @@
 import Product from "./model/Product.js";
+import Review from "./model/Review.js";
 
 const sampleProducts = [
   {
@@ -8,8 +9,8 @@ const sampleProducts = [
     price: 1290,
     costPrice: 650,
     stock: 12,
-    ratings: 4.8,
-    numOfReviews: 6,
+    ratings: 0,
+    numOfReviews: 0,
     isFeatured: true,
     image: "product1.jpeg",
   },
@@ -20,8 +21,8 @@ const sampleProducts = [
     price: 1590,
     costPrice: 800,
     stock: 8,
-    ratings: 4.7,
-    numOfReviews: 4,
+    ratings: 0,
+    numOfReviews: 0,
     isFeatured: true,
     image: "product2.jpeg",
   },
@@ -32,8 +33,8 @@ const sampleProducts = [
     price: 1890,
     costPrice: 950,
     stock: 10,
-    ratings: 4.9,
-    numOfReviews: 8,
+    ratings: 0,
+    numOfReviews: 0,
     isFeatured: true,
     image: "product3.jpeg",
   },
@@ -64,6 +65,20 @@ export const seedSampleProducts = async (ownerId) => {
       existing.images = [image];
       existing.isArchived = false;
       existing.isFeatured = true;
+      const reviewStats = await Review.aggregate([
+        { $match: { product: existing._id, isHidden: false } },
+        {
+          $group: {
+            _id: "$product",
+            average: { $avg: "$rating" },
+            count: { $sum: 1 },
+          },
+        },
+      ]);
+      existing.ratings = reviewStats[0]
+        ? Math.round(reviewStats[0].average * 10) / 10
+        : 0;
+      existing.numOfReviews = reviewStats[0]?.count || 0;
       await existing.save();
       continue;
     }
@@ -74,8 +89,8 @@ export const seedSampleProducts = async (ownerId) => {
       price: product.price,
       costPrice: product.costPrice,
       stock: product.stock,
-      ratings: product.ratings,
-      numOfReviews: product.numOfReviews,
+      ratings: 0,
+      numOfReviews: 0,
       isFeatured: product.isFeatured,
       user: ownerId,
       images: [image],
