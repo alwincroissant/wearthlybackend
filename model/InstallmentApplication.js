@@ -19,6 +19,8 @@ const shippingInfoSchema = new mongoose.Schema(
     contactNumber: { type: String },
     email: { type: String },
     address: { type: String },
+    region: { type: String },
+    province: { type: String },
     barangay: { type: String },
     city: { type: String },
     postalCode: { type: String },

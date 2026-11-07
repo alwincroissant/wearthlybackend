@@ -66,6 +66,7 @@ export const createAdminCustomer = async (req, res) => {
   const customer = await User.create({
     firstName: req.body.firstName.trim(),
     lastName: req.body.lastName.trim(),
+    fullName: `${req.body.firstName.trim()} ${req.body.lastName.trim()}`,
     email,
     password,
     contactNumber: req.body.contactNumber?.trim() || "",
@@ -111,6 +112,7 @@ export const updateAdminCustomer = async (req, res) => {
 
   customer.firstName = req.body.firstName.trim();
   customer.lastName = req.body.lastName.trim();
+  customer.fullName = `${customer.firstName} ${customer.lastName}`;
   customer.email = email;
   customer.contactNumber = req.body.contactNumber?.trim() || "";
   if (req.body.role) customer.role = req.body.role;

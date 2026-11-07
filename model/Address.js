@@ -11,6 +11,14 @@ const addressSchema = mongoose.Schema({
     type: String,
     required: true,
   },
+  region: {
+    type: String,
+    required: true,
+  },
+  province: {
+    type: String,
+    required: true,
+  },
   barangay: {
     type: String,
     required: true,

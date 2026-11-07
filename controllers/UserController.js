@@ -32,6 +32,10 @@ export const updateProfile = async (req, res) => {
       .filter((field) => req.body[field] !== undefined)
       .map((field) => [field, req.body[field]]),
   );
+  if (updates.firstName !== undefined || updates.lastName !== undefined) {
+    const current = await User.findById(req.user._id).select("firstName lastName").lean();
+    updates.fullName = `${updates.firstName ?? current?.firstName ?? ""} ${updates.lastName ?? current?.lastName ?? ""}`.trim();
+  }
 
   if (req.file) {
     updates.profilePicture = await uploadProfilePicture(req.file.buffer);
@@ -59,7 +63,15 @@ export const listAddresses = async (req, res) => {
   return res.status(200).json({ success: true, addresses });
 };
 
-const addressFields = ["label", "street", "barangay", "city", "postalCode"];
+const addressFields = [
+  "label",
+  "street",
+  "region",
+  "province",
+  "barangay",
+  "city",
+  "postalCode",
+];
 const getAddressUpdates = (body) =>
   Object.fromEntries(
     addressFields
@@ -68,7 +80,7 @@ const getAddressUpdates = (body) =>
   );
 
 const validateAddress = (address) =>
-  ["street", "barangay", "city", "postalCode"].every((field) =>
+  ["street", "region", "province", "barangay", "city", "postalCode"].every((field) =>
     address[field]?.trim(),
   );
 
