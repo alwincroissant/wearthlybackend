@@ -104,7 +104,7 @@ export const getProductReviews = asyncHandler(async (req, res) => {
 
   const reviews = await Review.find({ product: id, isHidden: false })
     .populate("user", "firstName lastName profilePicture")
-    .sort({ createdAt: -1 });
+    .sort({ rating: -1, createdAt: -1 });
 
   return res.status(200).json({ success: true, count: reviews.length, reviews });
 });
@@ -293,7 +293,7 @@ export const getAllReviews = asyncHandler(async (req, res) => {
   const reviews = await Review.find()
     .populate("product", "name")
     .populate("user", "firstName lastName email profilePicture")
-    .sort({ createdAt: -1 });
+    .sort({ rating: -1, createdAt: -1 });
 
   return res.status(200).json({ success: true, count: reviews.length, reviews });
 });
