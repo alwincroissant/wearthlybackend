@@ -72,8 +72,7 @@ export const newCheckout = async (req, res) => {
         message: "shippingInfo must include recipientName, contactNumber, and fulfillmentMethod",
       });
     }
-    const requestedFulfillmentMethod =
-      shippingInfo.partsFulfillmentMethod || shippingInfo.fulfillmentMethod;
+    const requestedFulfillmentMethod = "delivery";
     if (
       requestedFulfillmentMethod === "delivery" &&
       (!shippingInfo.address ||
@@ -172,24 +171,17 @@ export const newCheckout = async (req, res) => {
       });
     }
 
-    // ── 3.5. Separate logistics for Parts vs Motorcycles ─────────────────────
-    // Motorcycles are ALWAYS released at the authorized showroom bay (pickup + PDI)
+    // ── 3.5. All Wearthly orders use door-to-door delivery ──────────────────
     const motorcycleShippingInfo = {
       ...shippingInfo,
-      fulfillmentMethod: "pickup",
-      branch: shippingInfo.branch,
+      fulfillmentMethod: "delivery",
     };
 
-    // Parts can be courier delivery (to customer home) or showroom pickup
-    const partsFulfillmentMethod =
-      shippingInfo.partsFulfillmentMethod ||
-      shippingInfo.fulfillmentMethod ||
-      "pickup";
+    const partsFulfillmentMethod = "delivery";
 
     const partsShippingInfo = {
       ...shippingInfo,
       fulfillmentMethod: partsFulfillmentMethod,
-      branch: partsFulfillmentMethod === "pickup" ? shippingInfo.branch : undefined,
     };
 
     const shippingPrice =
