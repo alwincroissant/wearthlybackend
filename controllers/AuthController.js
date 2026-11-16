@@ -62,7 +62,15 @@ export const register = async (req, res) => {
       email,
       password,
       confirmPassword,
+      dataConsent,
     } = req.body;
+
+    if (dataConsent !== true && dataConsent !== "true") {
+      return res.status(400).json({
+        message: "Consent to the use of your data is required",
+        success: false,
+      });
+    }
 
     if (password !== confirmPassword) {
       return res.status(400).json({
