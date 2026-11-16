@@ -361,11 +361,11 @@ export const getProducts = async (req, res) => {
     if (maxP !== undefined && maxP !== "") filter.price.$lte = Number(maxP);
   }
 
-  // Ratings filter (e.g. 4 stars and above)
-  if (req.query.ratings || req.query["ratings[gte]"]) {
-    const minRating = Number(req.query.ratings || req.query["ratings[gte]"]);
-    if (!isNaN(minRating) && minRating > 0) {
-      filter.ratings = { $gte: minRating };
+  // Ratings filter (e.g. 4 stars and down)
+  if (req.query.ratings || req.query["ratings[lte]"]) {
+    const maxRating = Number(req.query.ratings || req.query["ratings[lte]"]);
+    if (!isNaN(maxRating) && maxRating > 0) {
+      filter.ratings = { $lte: maxRating };
     }
   }
 

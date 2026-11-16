@@ -72,6 +72,22 @@ export const newCheckout = async (req, res) => {
         message: "shippingInfo must include recipientName, contactNumber, and fulfillmentMethod",
       });
     }
+    const requestedFulfillmentMethod =
+      shippingInfo.partsFulfillmentMethod || shippingInfo.fulfillmentMethod;
+    if (
+      requestedFulfillmentMethod === "delivery" &&
+      (!shippingInfo.address ||
+        !shippingInfo.region ||
+        !shippingInfo.province ||
+        !shippingInfo.barangay ||
+        !shippingInfo.city ||
+        !/^\d{4}$/.test(String(shippingInfo.postalCode || "")))
+    ) {
+      return res.status(400).json({
+        success: false,
+        message: "Complete delivery address is required for delivery orders",
+      });
+    }
     if (!paymentMethod) {
       return res.status(400).json({ success: false, message: "paymentMethod is required" });
     }

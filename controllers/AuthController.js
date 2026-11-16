@@ -59,12 +59,6 @@ export const register = async (req, res) => {
       firstName,
       lastName,
       contactNumber,
-      street,
-      barangay,
-      city,
-      region,
-      province,
-      postalCode,
       email,
       password,
       confirmPassword,
@@ -98,17 +92,6 @@ export const register = async (req, res) => {
       contactNumber,
       email,
       password: hashedpassword,
-    });
-
-    const address = await Address.create({
-      userId: user._id,
-      street,
-      region,
-      province,
-      barangay,
-      city,
-      postalCode,
-      isDefault: true,
     });
 
     return await sendToken(user, 201, res);
